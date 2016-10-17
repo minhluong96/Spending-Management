@@ -28,6 +28,7 @@ void AddItem(TableItem *tableItem);
 void SaveData();
 void LoadData();
 void ShowTotal();
+void ClearData();
 
 HWND Type, Content, Amount, Table, Total;
 int itemCount;

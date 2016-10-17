@@ -250,6 +250,9 @@ void onCommand(HWND hWnd, int id, HWND hwndCtl, UINT codeNotify)
 {
 	switch (id)
 	{
+	case IDM_CLEAR:
+		ClearData();
+		break;
 	case IDM_ABOUT:
 		DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
 		break;
@@ -275,6 +278,13 @@ void onCommand(HWND hWnd, int id, HWND hwndCtl, UINT codeNotify)
 		size = GetWindowTextLength(Amount);
 		WCHAR *amount = new WCHAR[size + 1];
 		GetWindowText(Amount, amount, size + 1);
+
+		//Check
+		if (wcscmp(content, L"") == 0 || wcscmp(amount, L"") == 0 || wcscmp(type, L"") == 0)
+		{
+			MessageBox(hWnd,L"Please put info in the box",L"Error",0);
+			return;
+		}
 
 		TableItem *tableItem= new TableItem(type, content, _wtoi(amount));
 		list.push_back(tableItem);
@@ -397,4 +407,20 @@ void ShowTotal()
 	WCHAR *buff = new WCHAR[BUFFSIZE];
 	swprintf(buff, BUFFSIZE, L"%d", totalAmount);
 	SetWindowText(Total, buff);
+}
+
+void ClearData()
+{
+	WCHAR *path = new WCHAR[BUFFSIZE];
+
+	//get path
+	GetCurrentDirectory(BUFFSIZE, path);
+	wcscat_s(path, BUFFSIZE, L"\\data.ini");
+
+	DeleteFile(path);
+	list.clear();
+	ListView_DeleteAllItems(Table);
+	totalAmount = 0;
+	itemCount = 0;
+	SetWindowText(Total, L"0");
 }
